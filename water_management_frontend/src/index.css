@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
@@ -97,13 +98,13 @@ All colors MUST be HSL.
         --sidebar-ring: 142 70% 45%;
     }
     }
+/* 
+  @layer base {
+  * {
+    @apply border-border;
+  }
 
-    /* @layer base {
-    * {
-        @apply border-border;
-    }
-
-    body {
-        @apply bg-background text-foreground;
-    }
-    } */
+  body {
+    @apply bg-background text-foreground;
+  }
+} */

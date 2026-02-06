@@ -9,7 +9,7 @@ interface LimitAlertProps{
 
 export function LimitAlert({overAmount, onDismiss} : LimitAlertProps) {
     return (
-        <Alert varient='destructive' className='relative'>
+        <Alert variant='destructive' className='relative'>
             <AlertTriangle className="h-4 w-4"/>
             <AlertTitle>Daily Limit Exceeded</AlertTitle>
             <AlertDescription>
