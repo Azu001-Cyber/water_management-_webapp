@@ -71,71 +71,70 @@ const entrySchema = z.object({
 
 type EntryFormData = z.infer<typeof entrySchema>;
 
-interface EntryFormModalProps{
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    entry?: WaterEntry | null;
-    onsubmit: (data: Omit<WaterEntry, 'id' | 'userId' | 'createdAt' | 'updatedAt'>) => void;
-    isSubmitting? : boolean;
+interface EntryFormModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  entry?: WaterEntry | null;
+  onSubmit: (data: Omit<WaterEntry, 'id' | 'userId' | 'createdAt' | 'updatedAt'>) => void;
+  isSubmitting?: boolean;
 }
 
 export function EntryFormModal({
-    open,
-    onOpenChange,
-    entry,
-    onsubmit,
-    isSubmitting,
+  open,
+  onOpenChange,
+  entry,
+  onSubmit,
+  isSubmitting,
 }: EntryFormModalProps) {
-    const [showCustomType, setShowCustomType] = useState(entry?.usageType === 'others');
+  const [showCustomType, setShowCustomType] = useState(entry?.usageType === 'others');
 
-    const form = useForm<EntryFormData>({
-        resolver: zodResolver(entrySchema),
-        defaultValues: {
-            date: entry ? new Date(entry.date) : new Date(),
-            amount: entry ?.amount || undefined,
-            usageType: entry?.usageType || 'drinking',
-            customType: entry?.customType || '',
-        },
+  const form = useForm<EntryFormData>({
+    resolver: zodResolver(entrySchema),
+    defaultValues: {
+      date: entry ? new Date(entry.date) : new Date(),
+      amount: entry?.amount || undefined,
+      usageType: entry?.usageType || 'drinking',
+      customType: entry?.customType || '',
+    },
+  });
+
+  useEffect(() => {
+    if (entry) {
+      form.reset({
+        date: new Date(entry.date),
+        amount: entry.amount,
+        usageType: entry.usageType,
+        customType: entry.customType || '',
+      });
+      setShowCustomType(entry.usageType === 'others');
+    } else {
+      form.reset({
+        date: new Date(),
+        amount: undefined,
+        usageType: 'drinking',
+        customType: '',
+      });
+      setShowCustomType(false);
+    }
+  }, [entry, form, open]);
+
+  const handleSubmit = (data: EntryFormData) => {
+    onSubmit({
+      date: format(data.date, 'yyyy-MM-dd'),
+      amount: data.amount,
+      usageType: data.usageType,
+      customType: data.usageType === 'others' ? data.customType : undefined,
     });
+  };
 
-    useEffect(() => {
-        if (entry) {
-            form.reset({
-                date:new Date(entry.date),
-                amount: entry.amount,
-                usageType: entry.usageType,
-                customType: entry.customType || '',
-            });
-            setShowCustomType(entry.usageType === 'others');
-        }else {
-            form.reset({
-                date: new Date(),
-                amount: undefined,
-                usageType:'drinking',
-                customType: '',
-            });
-            setShowCustomType(false);
-        }
-    }, [entry, form, open]);
+  const watchUsageType = form.watch('usageType');
 
-    const handleSubmit = (data: EntryFormData) => {
-        onsubmit({
-            date: format(data.date, 'yyyy-MM-dd'),
-            amount: data.amount,
-            usageType: data.usageType,
-            customType: data.usageType === 'others' ? data.customType : undefined,
-        });
-    };
-
-    const watchUsageType = form.watch('usageType');
-    
-    useEffect(() => {
-        setShowCustomType(watchUsageType === 'others');
-    }, [watchUsageType]);
+  useEffect(() => {
+    setShowCustomType(watchUsageType === 'others');
+  }, [watchUsageType]);
     
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-        < DialogOverlay/>
         <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
             <DialogTitle>{entry ? 'Edit Entry' : 'Add Water Usage'}</DialogTitle>

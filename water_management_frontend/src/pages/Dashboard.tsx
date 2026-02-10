@@ -133,7 +133,7 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col bg-background">
+      <div className="flex min-h-screen flex-col bg-orange">
         <Header />
         <main className="flex flex-1 items-center justify-center">
           <div className="flex flex-col items-center gap-4">
